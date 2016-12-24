@@ -3,7 +3,7 @@
  * Project: VisionGO
  * Author: Eric Kim
  * Start Date: 12/23/2016
- * End Date:
+ * End Date: 12/23/2016
  * Description: This is the class file for stone object
  */
 
