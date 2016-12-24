@@ -72,6 +72,7 @@ public class Board {
 
 	// Determines the winner
 	// Returns the player as an int
+	// 1 is black, 0 is white
 	public int determineWinner() {
 
 	}
