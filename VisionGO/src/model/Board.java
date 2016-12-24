@@ -102,6 +102,9 @@ public class Board {
 		if (!equals(nextBoard)) { // need to implement superko rule (add history of board states?)
 			copy(nextBoard);
 		}
+		else {
+			throw new InvalidMoveException("Violates superko rule: Cannot repeat a previous board position");
+		}
 	}
 	
 	// Calculates next position given a move
