@@ -25,13 +25,10 @@ public class Board {
 	// Creates a 19x19 board from a input 19x19 array
 	public Board(int[][] board, int turn) {
 		this.board = new int[19][19];
-		this.turn = turn;
-		for (int i = 0; i < 19; i++) {
-			for (int j = 0; j < 19; j++) {
-				this.board[i][j] = board[i][j];
-			}
-		}
+		setBoard(board);
+		setTurn(turn);
 	}
+	/* Throw exception when invalid int? */
 	
 	// Creates a board from a input Board object
 	public Board(Board board) {
@@ -46,6 +43,20 @@ public class Board {
 	// Gets the turn
 	public int getTurn() {
 		return turn;
+	}
+	
+	// Sets the board to the given int array
+	public void setBoard(int[][] board) {
+		for (int i = 0; i < 19; i++) {
+			for (int j = 0; j < 19; j++) {
+				this.board[i][j] = board[i][j];
+			}
+		}
+	}
+	
+	// Sets the turn to the given player
+	public void setTurn(int turn) {
+		this.turn = turn;
 	}
 	
 	// Places a stone on the board given the coordinates
@@ -68,10 +79,13 @@ public class Board {
 		// Use getCaptures
 	}
 	
-	// Checks if the placement is valid
+	// Checks if the move is valid
 	// Returns true if a valid move, false if invalid
-	public boolean checkValid(int row, int col) {
-		// Use calcNextPos
+	public boolean isValid(int row, int col) {
+		Board newBoard = new Board(this);
+		int[][] newPos = newBoard.calcNextPos(row, col);
+		newBoard.setBoard(newPos);
+		return !equals(newBoard);
 	}
 	
 	// Checks if any stones are captured
