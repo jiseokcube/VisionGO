@@ -30,11 +30,6 @@ public class Board {
 	}
 	/* Throw exception when invalid int? */
 	
-	// Returns a copy of the Board object
-	public Board copy() {
-		return new Board(board, turn);
-	}
-	
 	// Gets the board
 	public int[][] getBoard() {
 		return board;
@@ -59,9 +54,45 @@ public class Board {
 		this.turn = turn;
 	}
 	
-	// Places a stone on the board given the coordinates
+	// Returns a copy of the Board object
+		public Board copy() {
+			return new Board(board, turn);
+		}
+	
+	// Determines whether two board objects are equal
+	public boolean equals(Board board) {
+		int[][] otherBoard = board.getBoard();
+		for (int i = 0; i < 19; i++) {
+			for (int j = 0; j < 19; j++) {
+				if (this.board[i][j] != otherBoard[i][j]) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	// Places a stone at the given coordinates disregarding rules
+	// Returns true if successful, false if the intersection is occupied
+	public boolean placeStone(int row, int col, int turn) {
+		if (board[row][col] == 0) {
+			board[row][col] = turn;
+			return true;
+		}
+		return false;
+	}
+	
+	// Removes the stone at the given coordinates
+	// Returns the color of the removed stone (0 if empty)
+	public int removeStone(int row, int col) {
+		int color = board[row][col];
+		board[row][col] = 0;
+		return color;
+	}
+	
+	// Makes a move at the given coordinates following rules
 	// Returns true if successful, false if invalid
-	public boolean placeStone(int row, int col) {
+	public boolean makeMove(int row, int col) {
 		board[row][col] = turn;
 		turn = turn % 2 + 1;
 		msg = checkValid(color, row, col);
@@ -103,18 +134,5 @@ public class Board {
 	// Returns the player as an int
 	public int determineWinner() {
 		
-	}
-	
-	// Determines whether two board objects are equal
-	public boolean equals(Board board) {
-		int[][] otherBoard = board.getBoard();
-		for (int i = 0; i < 19; i++) {
-			for (int j = 0; j < 19; j++) {
-				if (this.board[i][j] != otherBoard[i][j]) {
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 }
