@@ -9,36 +9,30 @@
 
 package model;
 
-import java.util.ArrayList;
+// Note: 0 is empty, 1 is black, 2 is white
 
 public class Board {
-	private ArrayList<ArrayList<Stone>> board;
+	private int[][] board;
 
 	// Default constructor
 	// Creates a 19x19 board and sets each values equal to null
 	public Board() {
-		board = new ArrayList<ArrayList<Stone>>();
-
-		for (int i = 0; i < 19; i++) {
-			for (int j = 0; j < 19; j++) {
-				board.get(i).set(j, null);
-			}
-		}
+		board = new int[19][19];
 	}
 
 	// Creates a 19x19 board and copies over the the input board
 	public Board(Board board1) {
-		board = new ArrayList<ArrayList<Stone>>();
+		board = new int[19][19];
 
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				board.get(i).set(j, board1.getBoard().get(i).get(j));
+				board[i][j] = board1.getBoard()[i][j];
 			}
 		}
 	}
 
 	// Gets the board
-	public ArrayList<ArrayList<Stone>> getBoard() {
+	public int[][] getBoard() {
 		return board;
 	}
 
@@ -46,7 +40,7 @@ public class Board {
 	public String placeStone(int color, int row, int col) {
 		msg = checkValid(color, row, col);
 		if (msg == "") {
-			board.get(row).set(col, new Stone(color, row, col));
+			board[row][col] = color;
 		}
 		return msg;
 	}
@@ -59,15 +53,18 @@ public class Board {
 	}
 
 	// Checks if any stones are captured
-	// Returns an arraylist of the stones that are captured
-	// The arraylist is empty if no stones are captured
-	public ArrayList<Stone> checkCapture() {
+	// Returns an 2d int array with the stone indexes of the stones should be
+	// removed
+	// The first row represents the row index of the stones
+	// The second row represents the column index of the stones
+	public int[][] checkCapture() {
 
 	}
 
 	// Removes a stone from the board given the coordinates
+	// Sets the given index to 0
 	public void removeStone(int row, int col) {
-		board.get(row).set(col, null);
+		board[row][col] = 0;
 	}
 
 	// Determines the winner
@@ -81,10 +78,7 @@ public class Board {
 	public boolean equals(Board board1) {
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				if (board.get(i).get(j) == null && board1.getBoard().get(i).get(j) == null) {
-				} else if (board.get(i).get(j) == null || board1.getBoard().get(i).get(j) == null) {
-					return false;
-				} else if (!(board.get(i).get(j).equals(board1.getBoard().get(i).get(j)))) {
+				if (board[i][j] != board1.getBoard()[i][j]) {
 					return false;
 				}
 			}
