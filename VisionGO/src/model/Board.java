@@ -23,9 +23,9 @@ public class Board {
 	}
 	
 	// Creates a 19x19 board from a input 19x19 array
-	public Board(int[][] board) {
+	public Board(int[][] board, int turn) {
 		this.board = new int[19][19];
-		turn = 1;
+		this.turn = turn;
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
 				this.board[i][j] = board[i][j];
@@ -35,7 +35,7 @@ public class Board {
 	
 	// Creates a board from a input Board object
 	public Board(Board board) {
-		this(board.getBoard());
+		this(board.getBoard(), board.getTurn());
 	}
 	
 	// Gets the board
