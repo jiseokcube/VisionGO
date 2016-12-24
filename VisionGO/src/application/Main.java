@@ -1,3 +1,12 @@
+/*
+ * File Name: Main.java
+ * Project: VisionGO
+ * Author: Jiseok Choi, Chloe Choi
+ * Start Date: 12/23/2016
+ * End Date: 
+ * Description: This is the main class file that launches the application.
+ */
+
 package application;
 	
 import javafx.application.Application;
