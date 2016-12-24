@@ -9,48 +9,67 @@
 
 package model;
 
-// Note: 0 is empty, 1 is black, 2 is white
+//Note: 0 is empty, 1 (false) is black, 2 (true) is white
 
 public class Board {
 	private int[][] board;
-
+	private int turn;
+	
 	// Default constructor
 	// Creates a 19x19 board and sets each values equal to null
 	public Board() {
 		board = new int[19][19];
+		turn = 1;
 	}
-
-	// Creates a 19x19 board and copies over the the input board
-	public Board(Board board1) {
-		board = new int[19][19];
-
+	
+	// Creates a 19x19 board from a input 19x19 array
+	public Board(int[][] board) {
+		this.board = new int[19][19];
+		turn = 1;
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				board[i][j] = board1.getBoard()[i][j];
+				this.board[i][j] = board[i][j];
 			}
 		}
 	}
-
+	
+	// Creates a board from a input Board object
+	public Board(Board board) {
+		this(board.getBoard());
+	}
+	
 	// Gets the board
 	public int[][] getBoard() {
 		return board;
 	}
-
-	// Places a stone on the board given the stone color and coordinates
-	// Returns the same string as the one returned in checkValid
-	public String placeStone(int color, int row, int col) {
+	
+	// Gets the turn
+	public int getTurn() {
+		return turn;
+	}
+	
+	// Places a stone on the board given the coordinates
+	// Returns true if successful, false if invalid
+	public String placeStone(int row, int col) {
+		board[row][col] = turn;
+		turn = turn % 2 + 1;
 		msg = checkValid(color, row, col);
 		if (msg.equals("")) {
 			board[row][col] = color;
 		}
 		return msg;
 	}
+	
+	// Removes a stone from the board given the coordinates
+	private void removeStone(int row, int col) {
+		board[row][col] = null;
+	}
 
 	// Checks if the placement is valid
 	// Returns an empty string if it is valid
 	// Returns the error message if invalid
-	public String checkValid(int color, int row, int col) {
-
+	public boolean checkValid(int row, int col) {
+		
 	}
 
 	// Checks if any stones are captured
@@ -62,29 +81,22 @@ public class Board {
 
 	}
 
-	// Removes a stone from the board given the coordinates
-	// Sets the given index to 0
-	public void removeStone(int row, int col) {
-		board[row][col] = 0;
-	}
-
 	// Determines the winner
 	// Returns the player as an int
-	// 1 is black, 2 is white
 	public int determineWinner() {
 
 	}
 
 	// Determines whether two board objects are equal
-	public boolean equals(Board board1) {
+	public boolean equals(Board board) {
+		int[][] otherBoard = board.getBoard();
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				if (board[i][j] != board1.getBoard()[i][j]) {
+				if (this.board[i][j] != otherBoard[i][j]) {
 					return false;
 				}
 			}
 		}
 		return true;
 	}
-
 }
