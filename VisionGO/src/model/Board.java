@@ -30,9 +30,9 @@ public class Board {
 	}
 	/* Throw exception when invalid int? */
 	
-	// Creates a board from a input Board object
-	public Board(Board board) {
-		this(board.getBoard(), board.getTurn());
+	// Returns a copy of the Board object
+	public Board copy() {
+		return new Board(board, turn);
 	}
 	
 	// Gets the board
@@ -82,7 +82,7 @@ public class Board {
 	// Checks if the move is valid
 	// Returns true if a valid move, false if invalid
 	public boolean isValid(int row, int col) {
-		Board newBoard = new Board(this);
+		Board newBoard = this.copy();
 		int[][] newPos = newBoard.calcNextPos(row, col);
 		newBoard.setBoard(newPos);
 		return !equals(newBoard);
@@ -92,7 +92,7 @@ public class Board {
 	// Returns a list with the coordinates of the stones that should be removed
 	// Uses the last move to efficiently calculate
 	public int[][] getCaptures(int row, int col) {
-		// graph search (bfs/dfs)
+		// graph search (bfs)
 	}
 	
 	public int calculateScore() {
