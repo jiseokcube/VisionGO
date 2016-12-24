@@ -1,16 +1,18 @@
+// DEPRECATED
+
 /*
  * File Name: Stone.java
  * Project: VisionGO
- * Author: Eric Kim
+ * Author: Eric Kim, Jiseok Choi
  * Start Date: 12/23/2016
  * End Date: 12/23/2016
- * Description: This is the class file for stone object
+ * Description: This is the class file for the stone object.
  */
 
 package model;
 
 public class Stone {
-	// Color: 1 is black, 0 is white.
+	// Color: 1 is black, 0 is white
 	private int color;
 	private int row;
 	private int col;

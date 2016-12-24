@@ -1,7 +1,7 @@
 /*
  * File Name: Board.java
  * Project: VisionGO
- * Author: Eric Kim
+ * Author: Eric Kim, Jiseok Choi
  * Start Date: 12/23/2016
  * End Date:
  * Description: This is the class file for the board object.
