@@ -4,7 +4,7 @@
  * Author: Eric Kim, Jiseok Choi, Chloe Choi
  * Start Date: 12/23/2016
  * End Date:
- * Description: This is the class file for the board object
+ * Description: This is the class file for the Board object.
  */
 
 package model;
@@ -78,24 +78,24 @@ public class Board {
 	}
 	
 	// Places a stone at the given coordinates disregarding rules
-	// Returns true if successful, false if the intersection is occupied
-	public boolean placeStone(int row, int col) {
+	// Throws error if intersection is occupied
+	public void placeStone(int row, int col) {
 		if (board[row][col] == 0) {
 			board[row][col] = turn;
-			return true;
 		}
-		return false;
+		else {
+			throw new InvalidMoveException("Intersection is already occupied.");
+		}
 	}
 	
 	// Removes the stone at the given coordinates
 	// Returns the color of the removed stone (0 if empty)
-	public int removeStone(int row, int col) {
-		int color = board[row][col];
+	public void removeStone(int row, int col) {
 		board[row][col] = 0;
-		return color;
 	}
 	
 	// Makes a move at the given coordinates following rules
+	// Checks superko rule
 	// Throws appropriate errors if move is invalid
 	public void makeMove(int row, int col) {
 		Board nextBoard = calcNextPos(row, col);
@@ -108,13 +108,12 @@ public class Board {
 	}
 	
 	// Calculates next position given a move
-	// Checks if the move is valid, if not throws appropriate errors
+	// Checks suicide rule
 	// Returns a new Board with the next state
 	public Board calcNextPos(int row, int col) {
 		Board nextBoard = this.clone();
-		if (placeStone(row, col)) {
-			
-		}
+		placeStone(row, col);
+		
 		return nextBoard;
 	}
 	
