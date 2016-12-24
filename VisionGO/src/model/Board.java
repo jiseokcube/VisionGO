@@ -37,6 +37,7 @@ public class Board {
 	}
 
 	// Places a stone on the board given the stone color and coordinates
+	// Returns the same string as the one returned in checkValid
 	public String placeStone(int color, int row, int col) {
 		msg = checkValid(color, row, col);
 		if (msg.equals("")) {
@@ -69,7 +70,7 @@ public class Board {
 
 	// Determines the winner
 	// Returns the player as an int
-	// 1 is black, 0 is white
+	// 1 is black, 2 is white
 	public int determineWinner() {
 
 	}
