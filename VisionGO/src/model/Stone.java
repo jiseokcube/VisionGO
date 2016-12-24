@@ -10,7 +10,7 @@
 package model;
 
 public class Stone {
-	// Color: 1 is black, 0 is white
+	// Color: 1 is black, 0 is white.
 	private int color;
 	private int row;
 	private int col;
