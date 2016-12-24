@@ -1,7 +1,7 @@
 /*
  * File Name: Board.java
  * Project: VisionGO
- * Author: Eric Kim, Jiseok Choi
+ * Author: Eric Kim, Jiseok Choi, Chloe Choi
  * Start Date: 12/23/2016
  * End Date:
  * Description: This is the class file for the board object
@@ -50,7 +50,7 @@ public class Board {
 	
 	// Places a stone on the board given the coordinates
 	// Returns true if successful, false if invalid
-	public String placeStone(int row, int col) {
+	public boolean placeStone(int row, int col) {
 		board[row][col] = turn;
 		turn = turn % 2 + 1;
 		msg = checkValid(color, row, col);
@@ -60,33 +60,37 @@ public class Board {
 		return msg;
 	}
 	
-	// Removes a stone from the board given the coordinates
-	private void removeStone(int row, int col) {
-		board[row][col] = null;
+	// Calculates next position given a move
+	// Returns next position but does not update the board
+	public int[][] calcNextPos(int row, int col) {
+		// Check if empty
+		// Check for suicide
+		// Use getCaptures
 	}
-
+	
 	// Checks if the placement is valid
-	// Returns an empty string if it is valid
-	// Returns the error message if invalid
+	// Returns true if a valid move, false if invalid
 	public boolean checkValid(int row, int col) {
+		// Use calcNextPos
+	}
+	
+	// Checks if any stones are captured
+	// Returns a list with the coordinates of the stones that should be removed
+	// Uses the last move to efficiently calculate
+	public int[][] getCaptures(int row, int col) {
+		// graph search (bfs/dfs)
+	}
+	
+	public int calculateScore() {
 		
 	}
-
-	// Checks if any stones are captured
-	// Returns an 2d int array with the stone indexes of the stones should be
-	// removed
-	// The first row represents the row index of the stones
-	// The second row represents the column index of the stones
-	public int[][] checkCapture() {
-
-	}
-
+	
 	// Determines the winner
 	// Returns the player as an int
 	public int determineWinner() {
-
+		
 	}
-
+	
 	// Determines whether two board objects are equal
 	public boolean equals(Board board) {
 		int[][] otherBoard = board.getBoard();
