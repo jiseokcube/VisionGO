@@ -28,7 +28,6 @@ public class Board {
 		setBoard(board);
 		setTurn(turn);
 	}
-	/* Throw exception when invalid int? */
 	
 	// Gets the board
 	public int[][] getBoard() {
@@ -55,9 +54,15 @@ public class Board {
 	}
 	
 	// Returns a copy of the Board object
-		public Board copy() {
-			return new Board(board, turn);
-		}
+	public Board clone() {
+		return new Board(board, turn);
+	}
+	
+	// Copies fields from another Board object
+	public void copy(Board board) {
+		setBoard(board.getBoard());
+		setTurn(board.getTurn());
+	}
 	
 	// Determines whether two board objects are equal
 	public boolean equals(Board board) {
@@ -74,7 +79,7 @@ public class Board {
 	
 	// Places a stone at the given coordinates disregarding rules
 	// Returns true if successful, false if the intersection is occupied
-	public boolean placeStone(int row, int col, int turn) {
+	public boolean placeStone(int row, int col) {
 		if (board[row][col] == 0) {
 			board[row][col] = turn;
 			return true;
@@ -91,32 +96,30 @@ public class Board {
 	}
 	
 	// Makes a move at the given coordinates following rules
-	// Returns true if successful, false if invalid
-	public boolean makeMove(int row, int col) {
-		board[row][col] = turn;
-		turn = turn % 2 + 1;
-		msg = checkValid(color, row, col);
-		if (msg.equals("")) {
-			board[row][col] = color;
+	// Throws appropriate errors if move is invalid
+	public void makeMove(int row, int col) {
+		Board nextBoard = calcNextPos(row, col);
+		if (!equals(nextBoard)) { // need to implement superko rule (add history of board states?)
+			copy(nextBoard);
 		}
-		return msg;
 	}
 	
 	// Calculates next position given a move
-	// Returns next position but does not update the board
-	public int[][] calcNextPos(int row, int col) {
-		// Check if empty
-		// Check for suicide
-		// Use getCaptures
+	// Checks if the move is valid, if not throws appropriate errors
+	// Returns a new Board with the next state
+	public Board calcNextPos(int row, int col) {
+		Board nextBoard = this.clone();
+		if (placeStone(row, col)) {
+			
+		}
+		return nextBoard;
 	}
 	
 	// Checks if the move is valid
 	// Returns true if a valid move, false if invalid
 	public boolean isValid(int row, int col) {
-		Board newBoard = this.copy();
-		int[][] newPos = newBoard.calcNextPos(row, col);
-		newBoard.setBoard(newPos);
-		return !equals(newBoard);
+		Board nextBoard = calcNextPos(row, col);
+		return !equals(nextBoard);
 	}
 	
 	// Checks if any stones are captured
