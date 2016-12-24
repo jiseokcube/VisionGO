@@ -3,11 +3,16 @@
  * Project: VisionGO
  * Author: Eric Kim, Jiseok Choi, Chloe Choi
  * Start Date: 12/23/2016
- * End Date:
+ * End Date: 
  * Description: This is the class file for the Board object.
  */
 
 package model;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 //Note: 0 is empty, 1 (false) is black, 2 (true) is white
 
@@ -107,13 +112,28 @@ public class Board {
 		}
 	}
 	
+	// Gets the coordinates of neighboring intersections
+	public Set<int[]> getNeighbors(int row, int col) {
+		Set<int[]> neighbors = new HashSet<int[]>();
+		neighbors.add(new int[]{Math.max(0, row - 1), col});
+		neighbors.add(new int[]{row, Math.max(0, col - 1)});
+		neighbors.add(new int[]{row, Math.min(col + 1, 18)});
+		neighbors.add(new int[]{Math.min(row + 1, 18), col});
+		neighbors.remove(new int[]{row, col});
+		return neighbors;
+	}
+	
 	// Calculates next position given a move
 	// Checks suicide rule
 	// Returns a new Board with the next state
 	public Board calcNextPos(int row, int col) {
 		Board nextBoard = this.clone();
 		placeStone(row, col);
-		
+		List<int[]> allyCaptures = getCaptures(row, col);
+		List<int[]> enemyCaptures = new ArrayList<int[]>();
+		for (int[] neighbor : getNeighbors(row, col)) {
+			
+		}
 		return nextBoard;
 	}
 	
@@ -124,11 +144,14 @@ public class Board {
 		return !equals(nextBoard);
 	}
 	
-	// Checks if any stones are captured
+	// Checks if the group connected to the given stone is captured
 	// Returns a list with the coordinates of the stones that should be removed
-	// Uses the last move to efficiently calculate
-	public int[][] getCaptures(int row, int col) {
-		// graph search (bfs)
+	public List<int[]> getCaptures(int row, int col) {
+		List<int[]> captures = new ArrayList<int[]>();
+		if (board[row][col] != 0) {
+			
+		}
+		return captures;
 	}
 	
 	public int calculateScore() {
