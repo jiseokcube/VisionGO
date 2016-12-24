@@ -39,7 +39,7 @@ public class Board {
 	// Places a stone on the board given the stone color and coordinates
 	public String placeStone(int color, int row, int col) {
 		msg = checkValid(color, row, col);
-		if (msg == "") {
+		if (msg.equals("")) {
 			board[row][col] = color;
 		}
 		return msg;
