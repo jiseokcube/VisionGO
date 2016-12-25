@@ -164,7 +164,7 @@ public class Board {
 	}
 	
 	// Checks if the group connected to the given stone is captured
-	// Uses a B.F. Sword
+	// Uses a B.F. Sword (that's a lot of AD)
 	// Returns a list with the coordinates of the stones that should be removed
 	public List<int[]> getCaptures(int row, int col) {
 		List<int[]> captures = new ArrayList<int[]>();
