@@ -10,6 +10,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,7 @@ public class Board {
 	// Creates a 19x19 board from a given 19x19 array
 	public Board(int[][] board, int turn) {
 		this(board, turn, new ArrayList<int[][]>());
+		addHistory(board);
 	}
 	
 	// Creates a 19x19 board from a given 19x19 array and previous board states
@@ -58,18 +60,6 @@ public class Board {
 		return history;
 	}
 	
-	// Returns copy of a given int array
-	public int[][] copyBoard(int[][] board) {
-		int[][] newBoard = new int[19][19];
-		
-		for (int i = 0; i < 19; i++) {
-			for (int j = 0; j < 19; j++) {
-				newBoard[i][j] = board[i][j];
-			}
-		}
-		return newBoard;
-	}
-	
 	// Sets the board to the given int array
 	public void setBoard(int[][] board) {
 		this.board = copyBoard(board);
@@ -86,6 +76,23 @@ public class Board {
 		for (int[][] board : history) {
 			this.history.add(copyBoard(board));
 		}
+	}
+	
+	// Returns copy of a given int array
+	public int[][] copyBoard(int[][] board) {
+		int[][] newBoard = new int[19][19];
+		
+		for (int i = 0; i < 19; i++) {
+			for (int j = 0; j < 19; j++) {
+				newBoard[i][j] = board[i][j];
+			}
+		}
+		return newBoard;
+	}
+	
+	// Adds board state to move history
+	public void addHistory(int[][] board) {
+		history.add(copyBoard(board));
 	}
 	
 	// Returns a copy of the current Board object
@@ -125,18 +132,40 @@ public class Board {
 	}
 	
 	// Returns the value of the next player's turn given the current player's turn
-	public int nextTurn(int turn) {
+	public int nextTurn() {
 		return turn % 2 + 1;
+	}
+	
+	// Checks if given list contains given array
+	public boolean contains(List<int[]> list, int[] array) {
+		for (int[] element : list) {
+			if (Arrays.equals(element, array)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	// Checks if given list contains given two-dimensional array
+	public boolean contains(List<int[][]> list, int[][] array) {
+		for (int[][] element : list) {
+			if (Arrays.deepEquals(element, array)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	// Makes a move at the given coordinates following all rules
 	// Checks the superko rule
 	// Throws the appropriate errors if move is invalid
 	public void makeMove(int row, int col) {
-		Board nextBoard = calcNextPos(row, col);
+		int[][] nextBoard = calcNextPos(row, col);
 		
-		if (!equals(nextBoard)) { // TODO: implement superko rule (add history of board states?)
-			copy(nextBoard);
+		if (!contains(history, nextBoard)) { // TODO: implement superko rule (add history of board states?)
+			setBoard(nextBoard);
+			setTurn(nextTurn());
+			addHistory(nextBoard);
 		}
 		else {
 			throw new InvalidMoveException("Violates superko rule: Cannot repeat a previous board position");
@@ -157,18 +186,18 @@ public class Board {
 	
 	// Calculates the next position given a move
 	// Checks the suicide rule
-	// Returns a new Board with the next state
-	public Board calcNextPos(int row, int col) {
+	// Returns an int array with the next state
+	public int[][] calcNextPos(int row, int col) {
 		Board nextBoard = this.copy();
 		nextBoard.placeStone(row, col);
 		
 		List<int[]> allyCaptures = nextBoard.getCaptures(row, col);
 		List<int[]> enemyCaptures = new ArrayList<int[]>();
 		int[][] nextPos = nextBoard.getBoard();
-		int nextTurn = nextBoard.nextTurn(nextBoard.getTurn());
+		int nextTurn = nextBoard.nextTurn();
 		
 		for (int[] neighbor : nextBoard.getNeighbors(row, col)) {
-			if (nextPos[neighbor[0]][neighbor[1]] == nextTurn && !enemyCaptures.contains(neighbor)) {
+			if (nextPos[neighbor[0]][neighbor[1]] == nextTurn && !contains(enemyCaptures, neighbor)) {
 				enemyCaptures.addAll(nextBoard.getCaptures(neighbor[0], neighbor[1]));
 			}
 		}
@@ -179,13 +208,12 @@ public class Board {
 		for (int[] capture : enemyCaptures) {
 			nextBoard.removeStone(capture[0], capture[1]);
 		}
-		nextBoard.setTurn(nextTurn);
-		return nextBoard;
+		return nextBoard.getBoard();
 	}
 	
 	// Checks if the move is valid
 	public boolean isValid(int row, int col) {
-		return !equals(calcNextPos(row, col));
+		return !contains(history, calcNextPos(row, col));
 	}
 	
 	// Checks if the group connected to the given stone is captured
