@@ -19,20 +19,29 @@ import java.util.Set;
 public class Board {
 	private int[][] board;
 	private int turn;
+	private List<int[][]> history;
 	
 	// Default constructor
 	// Creates an empty 19x19 board
 	public Board() {
 		board = new int[19][19];
 		turn = 1;
+		history = new ArrayList<int[][]>();
 	}
 	
 	// Creates a 19x19 board from a given 19x19 array
 	public Board(int[][] board, int turn) {
-		this.board = new int[19][19];
-		setBoard(board);
-		setTurn(turn);
+		this(board, turn, new ArrayList<int[][]>());
 	}
+	
+	// Creates a 19x19 board from a given 19x19 array and previous board states
+		public Board(int[][] board, int turn, List<int[][]> history) {
+			this.board = new int[19][19];
+			this.history = new ArrayList<int[][]>();
+			setBoard(board);
+			setTurn(turn);
+			setHistory(history);
+		}
 	
 	// Gets the board
 	public int[][] getBoard() {
@@ -44,13 +53,26 @@ public class Board {
 		return turn;
 	}
 	
-	// Sets the board to the given int array
-	public void setBoard(int[][] board) {
+	// Gets the move history
+	public List<int[][]> getHistory() {
+		return history;
+	}
+	
+	// Returns copy of a given int array
+	public int[][] copyBoard(int[][] board) {
+		int[][] newBoard = new int[19][19];
+		
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				this.board[i][j] = board[i][j];
+				newBoard[i][j] = board[i][j];
 			}
 		}
+		return newBoard;
+	}
+	
+	// Sets the board to the given int array
+	public void setBoard(int[][] board) {
+		this.board = copyBoard(board);
 	}
 	
 	// Sets the turn to the given player
@@ -58,18 +80,21 @@ public class Board {
 		this.turn = turn;
 	}
 	
+	// Sets the history to the given list of Board states
+	public void setHistory(List<int[][]> history) {
+		this.history.clear();
+		for (int[][] board : history) {
+			this.history.add(copyBoard(board));
+		}
+	}
+	
 	// Returns a copy of the current Board object
-	public Board clone() {
-		return new Board(board, turn);
+	public Board copy() {
+		return new Board(board, turn, history);
 	}
 	
-	// Copies fields from another Board object
-	public void copy(Board board) {
-		setBoard(board.getBoard());
-		setTurn(board.getTurn());
-	}
-	
-	// Determines whether two board objects are equal
+	// Determines whether two Board objects are equal
+	// Considered equal if board states are the same
 	public boolean equals(Board board) {
 		int[][] otherBoard = board.getBoard();
 		
@@ -134,7 +159,7 @@ public class Board {
 	// Checks the suicide rule
 	// Returns a new Board with the next state
 	public Board calcNextPos(int row, int col) {
-		Board nextBoard = this.clone();
+		Board nextBoard = this.copy();
 		nextBoard.placeStone(row, col);
 		
 		List<int[]> allyCaptures = nextBoard.getCaptures(row, col);
