@@ -21,13 +21,13 @@ public class Board {
 	private int turn;
 	
 	// Default constructor
-	// Creates a 19x19 board and sets each values equal to null
+	// Creates an empty 19x19 board
 	public Board() {
 		board = new int[19][19];
 		turn = 1;
 	}
 	
-	// Creates a 19x19 board from a input 19x19 array
+	// Creates a 19x19 board from a given 19x19 array
 	public Board(int[][] board, int turn) {
 		this.board = new int[19][19];
 		setBoard(board);
@@ -58,7 +58,7 @@ public class Board {
 		this.turn = turn;
 	}
 	
-	// Returns a copy of the Board object
+	// Returns a copy of the current Board object
 	public Board clone() {
 		return new Board(board, turn);
 	}
@@ -72,6 +72,7 @@ public class Board {
 	// Determines whether two board objects are equal
 	public boolean equals(Board board) {
 		int[][] otherBoard = board.getBoard();
+		
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
 				if (this.board[i][j] != otherBoard[i][j]) {
@@ -82,8 +83,8 @@ public class Board {
 		return true;
 	}
 	
-	// Places a stone at the given coordinates disregarding rules
-	// Throws error if intersection is occupied
+	// Places a stone at the given coordinates disregarding all rules
+	// Throws an error if intersection is occupied
 	public void placeStone(int row, int col) {
 		if (board[row][col] == 0) {
 			board[row][col] = turn;
@@ -94,17 +95,22 @@ public class Board {
 	}
 	
 	// Removes the stone at the given coordinates
-	// Returns the color of the removed stone (0 if empty)
 	public void removeStone(int row, int col) {
 		board[row][col] = 0;
 	}
 	
-	// Makes a move at the given coordinates following rules
-	// Checks superko rule
-	// Throws appropriate errors if move is invalid
+	// Returns the value of the next player's turn given the current player's turn
+	public int nextTurn(int turn) {
+		return turn % 2 + 1;
+	}
+	
+	// Makes a move at the given coordinates following all rules
+	// Checks the superko rule
+	// Throws the appropriate errors if move is invalid
 	public void makeMove(int row, int col) {
 		Board nextBoard = calcNextPos(row, col);
-		if (!equals(nextBoard)) { // need to implement superko rule (add history of board states?)
+		
+		if (!equals(nextBoard)) { // TODO: implement superko rule (add history of board states?)
 			copy(nextBoard);
 		}
 		else {
@@ -112,9 +118,10 @@ public class Board {
 		}
 	}
 	
-	// Gets the coordinates of neighboring intersections
+	// Returns a set of the coordinates of neighboring intersections
 	public Set<int[]> getNeighbors(int row, int col) {
 		Set<int[]> neighbors = new HashSet<int[]>();
+		
 		neighbors.add(new int[]{Math.max(0, row - 1), col});
 		neighbors.add(new int[]{row, Math.max(0, col - 1)});
 		neighbors.add(new int[]{row, Math.min(col + 1, 18)});
@@ -123,33 +130,46 @@ public class Board {
 		return neighbors;
 	}
 	
-	// Calculates next position given a move
-	// Checks suicide rule
+	// Calculates the next position given a move
+	// Checks the suicide rule
 	// Returns a new Board with the next state
 	public Board calcNextPos(int row, int col) {
 		Board nextBoard = this.clone();
-		placeStone(row, col);
-		List<int[]> allyCaptures = getCaptures(row, col);
+		nextBoard.placeStone(row, col);
+		
+		List<int[]> allyCaptures = nextBoard.getCaptures(row, col);
 		List<int[]> enemyCaptures = new ArrayList<int[]>();
-		for (int[] neighbor : getNeighbors(row, col)) {
-			
+		int[][] nextPos = nextBoard.getBoard();
+		int nextTurn = nextBoard.nextTurn(nextBoard.getTurn());
+		
+		for (int[] neighbor : nextBoard.getNeighbors(row, col)) {
+			if (nextPos[neighbor[0]][neighbor[1]] == nextTurn && !enemyCaptures.contains(neighbor)) {
+				enemyCaptures.addAll(nextBoard.getCaptures(neighbor[0], neighbor[1]));
+			}
 		}
+		if (allyCaptures.size() == 0 && enemyCaptures.size() > 0) {
+			throw new InvalidMoveException("Violates suicide rule: Cannot commit suicide");
+		}
+		
+		for (int[] capture : enemyCaptures) {
+			nextBoard.removeStone(capture[0], capture[1]);
+		}
+		nextBoard.setTurn(nextTurn);
 		return nextBoard;
 	}
 	
 	// Checks if the move is valid
-	// Returns true if a valid move, false if invalid
 	public boolean isValid(int row, int col) {
-		Board nextBoard = calcNextPos(row, col);
-		return !equals(nextBoard);
+		return !equals(calcNextPos(row, col));
 	}
 	
 	// Checks if the group connected to the given stone is captured
 	// Returns a list with the coordinates of the stones that should be removed
 	public List<int[]> getCaptures(int row, int col) {
 		List<int[]> captures = new ArrayList<int[]>();
+		
 		if (board[row][col] != 0) {
-			
+			// TODO: implement BFS
 		}
 		return captures;
 	}
