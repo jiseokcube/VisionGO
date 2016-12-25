@@ -1,5 +1,3 @@
-package controller;
-
 /*
  * File Name: GameController.java
  * Project: VisionGO
@@ -9,7 +7,8 @@ package controller;
  * Description: This is the class that outputs the game in text format.
  */
 
-public class GameController {
+package controller;
 
-
+public class TextController {
+	
 }
