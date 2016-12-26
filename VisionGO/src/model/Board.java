@@ -140,7 +140,7 @@ public class Board {
 				enemyCaptures.addAll(nextBoard.getCaptures(neighbor[0], neighbor[1]));
 			}
 		}
-		if (allyCaptures.size() == 0 && enemyCaptures.size() > 0) {
+		if (allyCaptures.size() > 0 && enemyCaptures.size() == 0) {
 			throw new InvalidMoveException("Violates suicide rule: Cannot commit suicide");
 		}
 		
@@ -153,34 +153,35 @@ public class Board {
 	}
 	
 	// Checks if the group connected to the given stone is captured
-		// Uses a B.F. Sword (that's a lot of AD)
-		// 3 represents a visited stone
-		// Returns a list with the coordinates of the stones that should be removed
-		private List<int[]> getCaptures(int row, int col) {
-			List<int[]> captures = new ArrayList<int[]>();
-			Queue<int[]> queue = new LinkedList<int[]>();
-			int[][] visited = copyBoard(board);
-			int[] current = new int[]{row, col};
-			
-			queue.add(current);
-			visited[row][col] = 3;
-			captures.add(current);
-			while (!queue.isEmpty()) {
-				current = queue.remove();
-				for (int[] neighbor : getNeighbors(current[0], current[1])) {
-					int stone = visited[neighbor[0]][neighbor[1]];
-					if (stone == 0) {
-						return new ArrayList<int[]>();
-					}
-					else if (stone == turn) {
-						queue.add(neighbor);
-						visited[neighbor[0]][neighbor[1]] = 3;
-						captures.add(current);
-					}
+	// Uses a B.F. Sword (that's a lot of AD)
+	// 3 represents a visited stone
+	// Returns a list with the coordinates of the stones that should be removed
+	public List<int[]> getCaptures(int row, int col) {
+		List<int[]> captures = new ArrayList<int[]>();
+		Queue<int[]> queue = new LinkedList<int[]>();
+		int[][] visited = copyBoard(board);
+		int[] current = new int[]{row, col};
+		int color = board[row][col];
+		
+		queue.add(current);
+		visited[row][col] = 3;
+		captures.add(current);
+		while (!queue.isEmpty()) {
+			current = queue.remove();
+			for (int[] neighbor : getNeighbors(current[0], current[1])) {
+				int stone = visited[neighbor[0]][neighbor[1]];
+				if (stone == 0) {
+					return new ArrayList<int[]>();
+				}
+				else if (stone == color) {
+					queue.add(neighbor);
+					visited[neighbor[0]][neighbor[1]] = 3;
+					captures.add(neighbor);
 				}
 			}
-			return captures;
 		}
+		return captures;
+	}
 	
 	// Calculates the score of the current board state
 	public int calculateScore() {
