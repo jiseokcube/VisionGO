@@ -113,7 +113,7 @@ public class Board {
 	public void makeMove(int row, int col) {
 		int[][] nextBoard = calcNextPos(row, col).getBoard();
 		
-		if (!contains(history, nextBoard)) {
+		if (!contains(history, nextBoard)) { // TODO: more efficient check of superko
 			setBoard(nextBoard);
 			setTurn(nextTurn());
 			addHistory(nextBoard);
