@@ -84,6 +84,19 @@ public class Board {
 		return true;
 	}
 	
+	// Returns a string representation of the Board class
+	@Override
+	public String toString() {
+		String output = "";
+		for (int[] line : board) {
+			for (int stone : line) {
+				output += String.valueOf(stone) + " ";
+			}
+			output += "\n";
+		}
+		return output;
+	}
+	
 	// Returns a copy of the current Board object
 	public Board copy() {
 		return new Board(board, turn, history);
