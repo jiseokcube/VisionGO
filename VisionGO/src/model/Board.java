@@ -12,7 +12,9 @@ package model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 //Note: 0 is empty, 1 (false) is black, 2 (true) is white
@@ -82,6 +84,19 @@ public class Board {
 		return true;
 	}
 	
+	// Returns a string representation of the Board class
+	@Override
+	public String toString() {
+		String output = "";
+		for (int[] line : board) {
+			for (int stone : line) {
+				output += String.valueOf(stone) + " ";
+			}
+			output += "\n";
+		}
+		return output;
+	}
+	
 	// Returns a copy of the current Board object
 	public Board copy() {
 		return new Board(board, turn, history);
@@ -98,7 +113,7 @@ public class Board {
 	public void makeMove(int row, int col) {
 		int[][] nextBoard = calcNextPos(row, col).getBoard();
 		
-		if (!contains(history, nextBoard)) {
+		if (!contains(history, nextBoard)) { // TODO: more efficient check of superko
 			setBoard(nextBoard);
 			setTurn(nextTurn());
 			addHistory(nextBoard);
@@ -125,7 +140,7 @@ public class Board {
 				enemyCaptures.addAll(nextBoard.getCaptures(neighbor[0], neighbor[1]));
 			}
 		}
-		if (allyCaptures.size() == 0 && enemyCaptures.size() > 0) {
+		if (allyCaptures.size() > 0 && enemyCaptures.size() == 0) {
 			throw new InvalidMoveException("Violates suicide rule: Cannot commit suicide");
 		}
 		
@@ -135,6 +150,37 @@ public class Board {
 		nextBoard.setTurn(nextTurn);
 		nextBoard.addHistory(nextBoard.getBoard());
 		return nextBoard;
+	}
+	
+	// Checks if the group connected to the given stone is captured
+	// Uses a B.F. Sword (that's a lot of AD)
+	// 3 represents a visited stone
+	// Returns a list with the coordinates of the stones that should be removed
+	public List<int[]> getCaptures(int row, int col) {
+		List<int[]> captures = new ArrayList<int[]>();
+		Queue<int[]> queue = new LinkedList<int[]>();
+		int[][] visited = copyBoard(board);
+		int[] current = new int[]{row, col};
+		int color = board[row][col];
+		
+		queue.add(current);
+		visited[row][col] = 3;
+		captures.add(current);
+		while (!queue.isEmpty()) {
+			current = queue.remove();
+			for (int[] neighbor : getNeighbors(current[0], current[1])) {
+				int stone = visited[neighbor[0]][neighbor[1]];
+				if (stone == 0) {
+					return new ArrayList<int[]>();
+				}
+				else if (stone == color) {
+					queue.add(neighbor);
+					visited[neighbor[0]][neighbor[1]] = 3;
+					captures.add(neighbor);
+				}
+			}
+		}
+		return captures;
 	}
 	
 	// Calculates the score of the current board state
@@ -231,17 +277,5 @@ public class Board {
 	// Removes the stone at the given coordinates
 	private void removeStone(int row, int col) {
 		board[row][col] = 0;
-	}
-	
-	// Checks if the group connected to the given stone is captured
-	// Uses a B.F. Sword (that's a lot of AD)
-	// Returns a list with the coordinates of the stones that should be removed
-	private List<int[]> getCaptures(int row, int col) {
-		List<int[]> captures = new ArrayList<int[]>();
-		
-		if (board[row][col] != 0) {
-			// TODO: implement BFS
-		}
-		return captures;
 	}
 }
